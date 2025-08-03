@@ -1,0 +1,9 @@
+[project]
+name = "network-traffic-sniffer"
+version = "0.1.0"
+description = "scapy 라이브러리를 활용해 네트워크 트래픽을 분석해보자"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "scapy>=2.6.1",
+]
