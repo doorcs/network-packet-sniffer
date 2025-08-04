@@ -1,0 +1,49 @@
+services:
+  database:
+    image: mysql:9.4.0 # 250804 기준 최신 이미지
+    platform: linux/amd64
+    container_name: database
+    healthcheck: # https://github.com/docker-library/mysql/issues/930
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+      start_period: 0s
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3306:3306' # 호스트 3306 : 외부 3306 매핑
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - traffic-monitoring
+
+  dashboard:
+    image: grafana/grafana-oss:12.1.0 # 250804 기준 최신 이미지
+    platform: linux/amd64
+    container_name: dashboard
+    restart: always
+    ports:
+      - '3000:3000' # 호스트 3000 : 외부 3000 매핑
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+    volumes:
+      - dashboard-data:/var/lib/grafana
+    networks:
+      - traffic-monitoring
+
+networks:
+  traffic-monitoring:
+    driver: bridge # 서비스간 통신을 위해 브리지 네트워크 사용
+
+volumes:
+  db-data:
+  dashboard-data:
