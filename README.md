@@ -1,5 +1,8 @@
 ## scapy 라이브러리를 활용해 네트워크 트래픽을 분석해보자
 
+### 아키텍처
+<img width="658" height="430" alt="diagram" src="https://github.com/user-attachments/assets/f0cdfb22-81bc-4eba-87aa-4f2407d9e582" />
+
 ### 환경 설정
 - 중앙 우분투 서버에 Docker 설치
 ```shell
